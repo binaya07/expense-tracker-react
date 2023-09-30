@@ -23,6 +23,7 @@ const Login = () => {
 
         let isAuthenticated = await authenticateUser(email, password);
         if (isAuthenticated) {
+            sessionStorage.setItem("isAuthenticated", true);
             navigate('/dashboard');
         } else {
             alert('Invalid credentials');
