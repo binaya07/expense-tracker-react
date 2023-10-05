@@ -21,9 +21,11 @@ const Login = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
 
-        let isAuthenticated = await authenticateUser(email, password);
-        if (isAuthenticated) {
+        const data = await authenticateUser(email, password);
+        if (data) {
             sessionStorage.setItem("isAuthenticated", true);
+            sessionStorage.setItem("user", email);
+            sessionStorage.setItem("userId", data.id);
             navigate('/dashboard');
         } else {
             alert('Invalid credentials');
