@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { PieChart, Pie, Cell, Tooltip, Legend } from 'recharts';
+import { PieChart, Pie, Cell, Tooltip } from 'recharts';
 import { getTransactionsForUser } from '../apis/Api';
 
 const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042'];
@@ -7,6 +7,11 @@ const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042'];
 const MyPieChart = () => {
   const [data, setData] = useState({ income: [], expense: [] });
   const userId = sessionStorage.getItem("userId");
+  
+  const convertToUSD = (amount, currency) => {
+    const conversionRates = { EUR: 1.05, NPR: 0.0075 }; 
+    return currency === 'USD' ? amount : amount * conversionRates[currency];
+  };
 
   useEffect(() => {
     const getData = async () => {
@@ -15,10 +20,12 @@ const MyPieChart = () => {
       let expenseData = {};
 
       transactions.forEach(transaction => {
+        // Convert all amount to USD from EUR and NPR
+        const amountInUSD = convertToUSD(transaction.amount, transaction.currency);
         if (transaction.type.toLowerCase() === 'income') {
-          incomeData[transaction.category] = (incomeData[transaction.category] || 0) + transaction.amount;
+          incomeData[transaction.category] = (incomeData[transaction.category] || 0) + amountInUSD;
         } else {
-          expenseData[transaction.category] = (expenseData[transaction.category] || 0) + transaction.amount;
+          expenseData[transaction.category] = (expenseData[transaction.category] || 0) + amountInUSD;
         }
       });
 
@@ -56,8 +63,8 @@ const MyPieChart = () => {
 
   return (
     <div style={{ display: 'flex', justifyContent: 'center' }}>
-      {renderPieChart(data.income, 'Income by Category')}
-      {renderPieChart(data.expense, 'Expense by Category')}
+      {renderPieChart(data.income, 'Income by Category (in USD)')}
+      {renderPieChart(data.expense, 'Expense by Category (in USD)')}
     </div>
   );
 };
