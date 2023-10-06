@@ -38,8 +38,15 @@ const MyPieChart = () => {
     getData();
   }, [userId]);
 
-  const renderPieChart = (data, title) => (
-    <div style={{ margin: '20px' }}>
+  const renderPieChart = (data, title) => {
+    if(data.length === 0) {   
+        return (<div style={{ margin: '20px', textAlign: 'center' }}>
+          <h4>{title}</h4>
+          <p>No Data</p>
+        </div>);
+    }
+
+    return (<div style={{ margin: '20px' }}>
       <h4 style={{textAlign: 'center'}}>{title}</h4>
       <PieChart width={300} height={200}>
         <Pie
@@ -58,8 +65,8 @@ const MyPieChart = () => {
         </Pie>
         <Tooltip />
       </PieChart>
-    </div>
-  );
+    </div>);
+        };
 
   return (
     <div style={{ display: 'flex', justifyContent: 'center' }}>

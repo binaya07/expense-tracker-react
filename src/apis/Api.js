@@ -9,7 +9,7 @@ export async function authenticateUser(email, password) {
         },
         body: JSON.stringify({ email, password }),
     });
-    let data = {};
+    let data = false;
     if (response.ok) {
         data = await response.json();
     }
